@@ -268,8 +268,6 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,macos,windows,linux
 
-# Ignore all .txt files
-*.txt
 
 # Ignore programs directory
 programs/
