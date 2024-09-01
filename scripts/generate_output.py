@@ -9,6 +9,12 @@ def extract_info_from_filename(filename):
         base_value = match.group(1)  # xxxxxx part of the filename
         language = match.group(2)  # KOREAN, JAPANESE, or TRANSLATED
         return base_value, language
+    else:
+        # Handle files like 28.GMM.txt assuming they are Japanese
+        match_simple = re.match(r'^([0-9]+)\.GMM\.txt$', filename)
+        if match_simple:
+            base_value = match_simple.group(1)  # xxxxxx part of the filename
+            return base_value, "JAPANESE"
     return None, None
 
 def read_file_lines(file_path):
@@ -53,7 +59,6 @@ def process_files(input_directory, output_directory):
                             file_data[base_value]['japanese'].append(line_content)
                         elif language == "TRANSLATED":
                             file_data[base_value]['translation'].append(line_content)
-
     # Now create CSV files for each base filename in the corresponding output directory
     for base_value, data in file_data.items():
         # Reconstruct the output directory path based on the original directory structure
@@ -68,7 +73,7 @@ def process_files(input_directory, output_directory):
             
             # Determine the maximum number of lines across the three languages
             max_lines = max(len(data['korean']), len(data['japanese']), len(data['translation']))
-            
+
             # Write each row in the CSV
             for i in range(max_lines):
                 korean_entry = data['korean'][i] if i < len(data['korean']) else ''
@@ -87,7 +92,6 @@ def process_files(input_directory, output_directory):
                     '',  # Notes
                     ''  # Skip formatting check
                 ])
-        print(f'Processed: {output_csv}')
 
 def create_directory_structure(output_root, relative_path):
     """Create the directory structure in the output folder."""
